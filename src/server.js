@@ -1,17 +1,21 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import fansRoutes from './routes/fans.js';
+// server.js
+import app from "./app.js";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import fansRoutes from "./routes/fans.js";
 
 dotenv.config();
-const app = express();
-app.use(express.json());
 
 // اتصال به MongoDB
-mongoose.connect(process.env.MONGO_URI).then(() => console.log('MongoDB connected'));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(console.error);
 
-// استفاده از routes
-app.use('/api/fans', fansRoutes);
+// Mount routes
+app.use("/api/fans", fansRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`MCP running on port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`🔥 Backend running on port ${PORT}`)
+);

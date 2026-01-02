@@ -1,51 +1,63 @@
 // backend/src/models/FanVariant.js
 import mongoose from 'mongoose';
 
-const FanVariantSchema = new mongoose.Schema({
-  fanSeries: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'FanSeries',
-    required: true
+const PerformancePointSchema = new mongoose.Schema(
+  {
+    airflow: { type: Number, required: true },        // m3/h
+    staticPressure: { type: Number, required: true }, // Pa
+    power: { type: Number, required: true },          // kW
+    efficiency: { type: Number, default: null },      // %
   },
+  { _id: false }
+);
 
-  variantName: {
-    type: String || null,
-    required: true
+const FanVariantSchema = new mongoose.Schema(
+  {
+    fanSeries: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'FanSeries',
+      required: true,
+      index: true,
+    },
+
+    variantName: {
+      type: String,
+      required: true,
+      trim: true, // مثال: "1400 RPM"
+    },
+
+    // 🔧 عملکرد
+    motorRpm: { type: Number, required: true },
+    maxAirflow: { type: Number, required: true },
+    maxStaticPressure: { type: Number, required: true },
+    powerConsumption: { type: Number, required: true }, // kW
+    noiseLevel: { type: Number, default: null },
+
+    electricalSpecs: {
+      voltage: Number,
+      phase: Number,
+      frequency: Number,
+    },
+
+    mechanicalSpecs: {
+      bearing: String,
+    },
+
+    weight: { type: Number, default: null }, // kg
+    price: { type: Number, default: null },
+
+    performanceCurve: {
+      type: [PerformancePointSchema],
+      default: [],
+    },
   },
+  { timestamps: true }
+);
 
-  impellerDia: Number || null,        // mm
-  powerConsumption: Number || null,   // kW
-  motorRpm: Number || null,
-  maxAirflow: Number || null,         // m3/h
-  noiseLevel: Number || null,         // dB
-
-  electricalSpecs: {
-    voltage: Number || null,
-    phase: Number || null,
-    frequency: Number || null
-  },
-
-  mechanicalSpecs: {
-    shaftDiameter: Number || null,
-    bearing: String || null
-  },
-
-  weights: {
-    belt: Number || null,
-    direct: Number || null
-  },
-
-  dimensions: {
-    A: Number || null,
-    B: Number || null,
-    C: Number || null,
-    D: Number || null,
-    H: Number || null,
-    N: Number || null
-  },
-
-  price: Number || null
-
-}, { timestamps: true });
+// هر Variant فقط یک‌بار در هر Series
+FanVariantSchema.index(
+  { fanSeries: 1, variantName: 1 },
+  { unique: true }
+);
 
 export default mongoose.model('FanVariant', FanVariantSchema);

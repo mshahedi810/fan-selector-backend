@@ -4,7 +4,6 @@ import XLSX from 'xlsx';
 
 import FanSeries from './models/FanSeries.js';
 import FanVariant from './models/FanVariant.js';
-import PerformancePoint from './models/PerformancePoint.js';
 
 // اتصال به MongoDB
 await mongoose.connect('mongodb://localhost:27017/fansdb');

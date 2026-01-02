@@ -1,9 +1,19 @@
-import express from 'express';
-import cors from 'cors';
+// app.js
+import express from "express";
+import cors from "cors";
 
 const app = express();
 
-app.use(cors());
-app.use(express.json()); // برای دریافت JSON از فرانت
+// Middleware ها
+app.use(cors({
+  origin: "http://localhost:3000", // فرانتت
+  credentials: true
+}));
+app.use(express.json());
 
-export default app;
+// میتونی route های اصلی رو هم اینجا mount کنی یا جدا نگه داری
+// مثال:
+// import fansRoutes from "./routes/fans.js";
+// app.use("/api/fans", fansRoutes);
+
+export default app; // حتما export default داشته باشه
